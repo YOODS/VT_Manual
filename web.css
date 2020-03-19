@@ -1,0 +1,13 @@
+h1 {
+    border-bottom: 3px solid #000;
+    border-left: 30px solid #F44000;
+    padding-left: 10px;
+}
+h2 {
+    border-bottom: 1px solid #000;
+    border-left: 7px solid #0044FF;
+    padding-left: 10px;
+}
+h3 {
+    border-bottom: 1px dashed #000;
+}
