@@ -1,6 +1,10 @@
 {
-    "styles": {
-        "website": "web.css",
-        "pdf": "pdf.css"
-    }
+  "styles": {
+    "website": "web.css",
+    "pdf": "pdf.css"
+  },
+  "plugins": ["custom-favicon"],
+  "pluginsConfig": {
+    "favicon": "./assets/images/icon/favicon.ico"
+  }
 }
