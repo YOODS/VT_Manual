@@ -9,11 +9,11 @@ npm install gitbook-cli -g
 ~~~
 
 ## オンライン閲覧  
-このディレクトリ(VT_Manual/)にて、Gitbookのローカルサーバを起動
+このディレクトリ(VT_Manual/)にて、Gitbookのローカルサーバを起動。ブラウザにて、 *localhost:4000* に接続する。  
+機種ごとの違いは環境変数を指定して起動する。例えばMotomanであれば
 ~~~
-gitbook serve
+Motoman=true gitbook serve
 ~~~
-ブラウザにて、 *localhost:4000* に接続する。
 
 ## PDF化  
 PDFにするには[Calibre](https://calibre-ebook.com/)をインストールする必要があります。

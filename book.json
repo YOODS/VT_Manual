@@ -3,8 +3,5 @@
     "website": "web.css",
     "pdf": "pdf.css"
   },
-  "plugins": ["custom-favicon"],
-  "pluginsConfig": {
-    "favicon": "./assets/images/icon/favicon.ico"
-  }
+ "plugins": [ "ifenv@git+https://github.com/cucumber-ltd/gitbook-plugin-ifenv.git","include" ]
 }

@@ -1,35 +1,76 @@
-# マスター登録する
+# マスター登録する  
+まず最初に対象ワークのマスター3Dデータを採取します。マスター3Dデータは、再生時にワークを見つけるためのテンプレートとなるデータで、ソルバーは環境中からマスターと同じ形状の物体を探します。
 
-## 1.撮影位置に移動  
-ロボットをジョグ動作などで、ワークを撮影できる位置に移動します。
+## 1.プログラム  
+サンプルプログラムの以下の部分にて、
+- 撮影位置に移動
+- 3Dデータの採取
+ができます。
+{% ifenv env="Motoman" %}
+~~~
+NOP
+*RESET
+CALL JOB:ROVI_RESET
+GETS LI000 $RV
+JUMP *STOP IF LI000<>0
+*CAPTURE
+MOVJ VJ=20.00  //撮影位置
+TIMER T=0.500
+CALL JOB:ROVI_CAPTURE
+GETS LI000 $RV
+JUMP *CAPTURE IF LI000<>0
+~~~
+{% endifenv %}
 
-## 2.撮影する  
-撮影はロボット言語の下表のサブルーチンを呼出すことで行います。サンプルプログラムにも同命令があるので、これを実行します。サブルーチンはいくつかの基本命令で構成されているので、一連の命令を全て実行し、呼び出した次の行に戻ってくるまでステップ実行します。
+## 2.撮影位置に移動  
+ロボットをジョグ動作などで、撮影位置に移動します。撮影位置は教示点と異なっても構いません。
 
-|リクエスト略号|Motoman|Fanuc|Melfa|
-|:---|:---|:---|:---|
-|X1|CALL JOB:ROVI_CAPTURE|ﾖﾋﾞﾀﾞｼ ROVI_CAPTURE|Gosub *X1|
+## 3.撮影する  
+撮影はロボット言語の
+{% ifenv env="Fanuc" %}
+~~~
+ﾖﾋﾞﾀﾞｼ ROVI_CAPTURE
+~~~
+{% endifenv %}
+{% ifenv env="Motoman" %}
+~~~
+CALL JOB: ROVI_CAPTURE
+~~~
+{% endifenv %}
+{% ifenv env="Melfa" %}
+~~~
+Gosub *X1
+~~~
+{% endifenv %}
+呼出します。。サブルーチンはいくつかの基本命令で構成されているので、一連の命令を全て実行し、呼び出した次の行に戻ってくるまでステップ実行します。
+
+{% ifenv env="Motoman" %}
+また撮影は、設定パネルの【2.位相シフト調整/3Dスキャン】押下でも可能です。
+{% endifenv %}
 
 撮影に成功すると、下図のようにワークの3Dデータが取り込まれます。
 ![Capture](img/tp2.png)
 
 ![Watch out](img/watch.png)失敗した場合は、サンプルプログラムでは、再びサブルーチン呼出の前の行まで戻ります。
 
-![Watch out](img/watch.png)再撮影時は3Dデータをクリアしてください。クリアは以下のサブルーチンで行います。  
+![Watch out](img/watch.png)再撮影時は3Dデータをクリアしてください。クリアは設定パネルの【2.位相シフト調整/クリア】押下か、ロボット言語の以下のサブルーチンで行います。
 
-|リクエスト略号|Motoman|Fanuc|Melfa|
-|:---|:---|:---|:---|
-|X0|CALL JOB:ROVI_RESET|ﾖﾋﾞﾀﾞｼ ROVI_RESET|Gosub *X0|
+{% ifenv env="Fanuc" %}
+~~~
+ﾖﾋﾞﾀﾞｼ ROVI_RESET
+~~~
+{% endifenv %}
+{% ifenv env="Motoman" %}
+~~~
+CALL JOB: ROVI_RESET
+~~~
+{% endifenv %}
+{% ifenv env="Melfa" %}
+Gosub *X0
+{% endifenv %}
 ![Watch out](img/watch.png)撮影テクニックの詳細はAppendixの[撮影のポイント](HackCapture.md)を参考
 
-![Watch out](img/watch.png)設定パネルの【2.位相シフト撮影/3Dボタン】での撮影は機種によって可・不可があります。
-
-||Motoman|Fanuc|Melfa|Nachi|Kuka|
-|:---|:---|:---|:---|:---|:---|
-|TB/PC両面操作|○|×|○| | |
-
-
-## 3.加工する  
+## 4.加工する  
 撮影した3Dデータには、背景の台などワーク以外のものが含まれます。マスターデータにはこれらを含まないものを登録しなければなりません。背景を削除する最も簡単な方法は、点のすくいとり機能です。これは次のように使います。
 1. ランチャーからセットアップを選び、設定パネルを表示する
 2. 【3.クロップ/すくいワールド】にて取りたい点数を入力します
